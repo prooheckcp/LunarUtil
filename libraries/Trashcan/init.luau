@@ -3,7 +3,6 @@
 local CLEANUP_TABLE = {
     Instance = "Destroy",
     RBXScriptConnection = "Disconnect",
-    table = "Destroy",
 }
 
 local SPECIAL_CLEANUP = {
@@ -17,6 +16,22 @@ local SPECIAL_CLEANUP = {
 
     end
 }
+
+local function getTableMethod(tab): string?
+    if typeof(tab.Destroy) == "function" then
+        return "Destroy"
+    end
+
+    if typeof(tab.Disconnect) == "function" then
+        return "Disconnect"
+    end
+
+    if typeof(tab.Cancel) == "function" then
+        return "Cancel"
+    end
+
+    return nil
+end
 
 local function isPromise(object): boolean
     return 
@@ -135,6 +150,7 @@ function Trashcan:_CleanObject(object: any): ()
             self._CustomCleanup and 
             self._CustomCleanup[object] 
             or CLEANUP_TABLE[objectType]
+            or (objectType == "table" and getTableMethod(object))
         )
     
     if not cleanupMethod then
