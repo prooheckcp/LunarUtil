@@ -1,0 +1,8 @@
+[package]
+name = "prooheckcp/Trashcan"
+description = "A cleaner to handle connections and or object cleaning in your project"
+version = "0.0.1"
+license = "MIT"
+authors = ["Vasco Soares (prooheckcp)"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
