@@ -1,62 +1,62 @@
 --!strict
 
 local CLEANUP_TABLE = {
-    Instance = "Destroy",
-    RBXScriptConnection = "Disconnect",
+	Instance = "Destroy",
+	RBXScriptConnection = "Disconnect",
 }
 
 local SPECIAL_CLEANUP = {
-    thread = function(thread: thread)
-        task.cancel(thread)
-    end,
-    ["function"] = function(func: (...any) -> ...any)
-        func()
-    end,
-    promise = function()
+	thread = function(thread: thread)
+		task.cancel(thread)
+	end,
+	["function"] = function(func: (...any) -> ...any)
+		func()
+	end,
+	promise = function()
 
-    end
+	end
 }
 
 local function getTableMethod(tab): string?
-    if typeof(tab.Destroy) == "function" then
-        return "Destroy"
-    end
+	if typeof(tab.Destroy) == "function" then
+		return "Destroy"
+	end
 
-    if typeof(tab.Disconnect) == "function" then
-        return "Disconnect"
-    end
+	if typeof(tab.Disconnect) == "function" then
+		return "Disconnect"
+	end
 
-    if typeof(tab.Cancel) == "function" then
-        return "Cancel"
-    end
+	if typeof(tab.Cancel) == "function" then
+		return "Cancel"
+	end
 
-    return nil
+	return nil
 end
 
 local function isPromise(object): boolean
-    return 
-        typeof(object) == "table" and 
-        typeof(object.getStatus) == "function" and
-        typeof(object.finally) == "function" and
-        typeof(object.cancel) == "function"
+	return 
+		typeof(object) == "table" and 
+		typeof(object.getStatus) == "function" and
+		typeof(object.finally) == "function" and
+		typeof(object.cancel) == "function"
 end
 
 --[=[
-    @class Trashcan
+	@class Trashcan
 
-    Trashcan is an object used to track objects during runtime and clean them up when they are no longer needed. 
-    This is useful for managing memory and preventing memory leaks
+	Trashcan is an object used to track objects during runtime and clean them up when they are no longer needed. 
+	This is useful for managing memory and preventing memory leaks
 
-    ```lua
-    local trashcan = Trashcan.new()
+	```lua
+	local trashcan = Trashcan.new()
 
-    local part = Instance.new("Part")
-    trashcan:Collect(part) -- Will store the part in the trashcan
+	local part = Instance.new("Part")
+	trashcan:Collect(part) -- Will store the part in the trashcan
 
-    trashcan:Empty() -- Will make the trashcan empty
+	trashcan:Empty() -- Will make the trashcan empty
 
-    trashcan:Destroy() -- Will destroy the trashcan
-    ```
+	trashcan:Destroy() -- Will destroy the trashcan
+	```
 ]=]
 local Trashcan = {}
 Trashcan.__index = Trashcan
@@ -64,115 +64,146 @@ Trashcan._Connections = {} :: {[any]: true}
 Trashcan._CustomCleanup = nil :: {[string]: string}?
 
 --[=[
-    Constructs a new trashcan object
+	Constructs a new trashcan object
 
-    ```lua
-    local trove = Trashcan.new()
-    ```
+	```lua
+	local trashcan = Trashcan.new()
+	```
 
-    @return Trashcan
+	@return Trashcan
 ]=]
 function Trashcan.new(): Trashcan
-    return setmetatable({}, Trashcan)
+	return setmetatable({}, Trashcan)
 end
 
 --[=[
-    Receives an object and stores it in the trashcan
+	Receives an object and stores it in the trashcan
 
-    @within Trashcan
-    @param object T -- Whatever object you wish to track
-    @param cleanupMethod string? The method to call on the object when it is time to clean it up. Primarily useful to cleanup custom objects
+	@within Trashcan
+	@param object T -- Whatever object you wish to track
+	@param cleanupMethod string? The method to call on the object when it is time to clean it up. Primarily useful to cleanup custom objects
 
-    @return any The object that was passed in
+	@return any The object that was passed in
 ]=]
 function Trashcan:Collect<T>(object: T, cleanupMethod: string?): T
-    assert(object ~= nil, "Argument 1 must not be nil")
-    assert(not cleanupMethod or typeof(cleanupMethod) == "string", "Argument 2 must be a string")
+	assert(object ~= nil, "Argument 1 must not be nil")
+	assert(not cleanupMethod or typeof(cleanupMethod) == "string", "Argument 2 must be a string")
 
-    self._Connections[object] = true -- Store by the memory address of our object
+	self._Connections[object] = true -- Store by the memory address of our object
 
-    if cleanupMethod then
-        if not self._CustomCleanup then
-            self._CustomCleanup = {}
-        end
+	if cleanupMethod then
+		if not self._CustomCleanup then
+			self._CustomCleanup = {}
+		end
 
-        self._CustomCleanup[object] = cleanupMethod
-    end
+		self._CustomCleanup[object] = cleanupMethod
+	end
 
-    return object
+	return object
 end
 
 --[=[
-    Receives the instance, clones it, stores it in the trashcan and returns the clone
+	Receives the instance, clones it, stores it in the trashcan and returns the clone
+
+	```lua
+	local instance = Instance.new("Part")
+
+	local clone = trashcan:Clone(instance)
+	clone.Parent = workspace
+	```
+
+	@param object Instance -- The instance to clone
+
+	@return Instance
 ]=]
 function Trashcan:Clone(object: Instance): Instance
-    assert(typeof(object) == "Instance", "Argument 1 must be an instance")
+	assert(typeof(object) == "Instance", "Argument 1 must be an instance")
 
-    return self:Collect(object:Clone()) :: Instance
-end
-
-function Trashcan:Empty()
-    for object in self._Connections do
-        self:_CleanObject(object)
-    end
-
-    self._Connections = nil
-    self._CustomCleanup = nil
+	return self:Collect(object:Clone()) :: Instance
 end
 
 --[=[
-    ::: warning
+	:::note
+	Unlike ``:Destroy`` empty won't make the trashcan object unaccessible. It will just remove all objects from the trashcan
+	:::
 
-    :::
+	Destroys all the objects and connections that were fed into the trashcan
 
-    ```lua
-    trashcan:Destroy()
-    ```
+	```lua
+	local trashcan = Trashcan.new()
 
-    @within Trashcan
-    @return ()
+	local part = Instance.new("Part")
+	trashcan:Collect(part)
+	trashcan:Empty()
+
+	-- Part is now destroyed and indexing it will throw a warning
+	```
+
+	@return ()
+]=]
+function Trashcan:Empty(): ()
+	for object in self._Connections do
+		self:_CleanObject(object)
+	end
+
+	self._Connections = nil
+	self._CustomCleanup = nil
+end
+
+--[=[
+	:::warning
+		Destroying the trashcan will not only clear the trashcan but also make the trashcan object unaccessible
+	:::
+
+	```lua
+	trashcan:Destroy()
+	```
+
+	@within Trashcan
+	@return ()
 ]=]
 function Trashcan:Destroy()
-    setmetatable(self, nil)
+	setmetatable(self, nil)
 end
 
 --[=[
-    Cleans up the object by calling the appropriate cleanup method
+	Cleans up the object by calling the appropriate cleanup method
 
-    @within Trashcan
-    @param object any -- The object to clean up
+	@private
+	@within Trashcan
+	@param object any -- The object to clean up
 
-    @return ()
+	@return ()
 ]=]
 function Trashcan:_CleanObject(object: any): ()
-    local objectType: string = typeof(object)
-    local cleanupMethod: string? = (
-            self._CustomCleanup and 
-            self._CustomCleanup[object] 
-            or CLEANUP_TABLE[objectType]
-            or (objectType == "table" and getTableMethod(object))
-        )
-    
-    if not cleanupMethod then
-        local specialCleanup = SPECIAL_CLEANUP[objectType] or (isPromise(object) and SPECIAL_CLEANUP.promise)
+	local objectType: string = typeof(object)
+	local cleanupMethod: string? = (
+			self._CustomCleanup and 
+			self._CustomCleanup[object] 
+			or CLEANUP_TABLE[objectType]
+			or (objectType == "table" and getTableMethod(object))
+		)
+	
+	if not cleanupMethod then
+		local specialCleanup = SPECIAL_CLEANUP[objectType] or (isPromise(object) and SPECIAL_CLEANUP.promise)
 
-        if specialCleanup then
-            specialCleanup(object)
-            return
-        end
+		if specialCleanup then
+			specialCleanup(object)
+			return
+		end
 
-        error("No cleanup method found for object of type " .. typeof(object)) -- Developer mistake; should error
-    end
+		error("No cleanup method found for object of type " .. typeof(object)) -- Developer mistake; should error
+	end
 
-    cleanupMethod[object](object)
+	cleanupMethod[object](object)
 end
 
 export type Trashcan = {
-    new: () -> Trashcan,
-    Collect: <T>(object: T, cleanupMethod: string?) -> T,
-    Clone: (object: Instance) -> Instance,
-    Empty: () -> (),
-    Destroy: () -> ()
+	new: () -> Trashcan,
+	Collect: <T>(object: T, cleanupMethod: string?) -> T,
+	Clone: (object: Instance) -> Instance,
+	Empty: () -> (),
+	Destroy: () -> ()
 }
 
 return Trashcan

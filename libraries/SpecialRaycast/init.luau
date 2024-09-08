@@ -5,22 +5,22 @@ local ATTEMPT_LIMIT: number = 12
 local raycastParams: RaycastParams = RaycastParams.new()
 
 --[=[
-    @class SpecialRaycast
+	@class SpecialRaycast
 
-    Class to manage special raycasts
+	Class to manage special raycasts
 ]=]
 local SpecialRaycast = {}
 SpecialRaycast.__index = SpecialRaycast
 SpecialRaycast.SpecialRaycastParams = SpecialRaycastParams
 
 --[=[
-    Used to cast a raycast that filters and ignores certain objects uppon collision. Specially useful for more complex raycasting
+	Used to cast a raycast that filters and ignores certain objects uppon collision. Specially useful for more complex raycasting
 
-    @param origin Vector3
-    @param direction Vector3
-    @param specialRaycastParams SpecialRaycastParams
+	@param origin Vector3
+	@param direction Vector3
+	@param specialRaycastParams SpecialRaycastParams
 
-    @return RaycastResult?
+	@return RaycastResult?
 ]=]
 function SpecialRaycast:Cast(origin: Vector3, direction: Vector3, specialRaycastParams: SpecialRaycastParams.SpecialRaycastParams): RaycastResult?
 	raycastParams.FilterDescendantsInstances = specialRaycastParams.FilterDescendantsInstances or {}
@@ -30,14 +30,14 @@ function SpecialRaycast:Cast(origin: Vector3, direction: Vector3, specialRaycast
 end
 
 --[=[
-    Used to cast a raycast that filters and ignores certain objects uppon collision. Specially useful for more complex raycasting
+	Used to cast a raycast that filters and ignores certain objects uppon collision. Specially useful for more complex raycasting
 
-    @param origin CFrame
+	@param origin CFrame
 	@param size Vector3
-    @param direction Vector3
-    @param specialRaycastParams SpecialRaycastParams
+	@param direction Vector3
+	@param specialRaycastParams SpecialRaycastParams
 
-    @return RaycastResult?
+	@return RaycastResult?
 ]=]
 function SpecialRaycast:BlockCast(origin: CFrame, size: Vector3, direction: Vector3, specialRaycastParams: SpecialRaycastParams.SpecialRaycastParams): RaycastResult?
 	raycastParams.FilterDescendantsInstances = specialRaycastParams.FilterDescendantsInstances or {}
@@ -47,17 +47,17 @@ function SpecialRaycast:BlockCast(origin: CFrame, size: Vector3, direction: Vect
 end
 
 --[=[
-    Private method to manage the special raycasts logic
+	Private method to manage the special raycasts logic
 
-    @private
+	@private
 
-    @param origin CFrame
+	@param origin CFrame
 	@param size Vector3
-    @param direction Vector3
-    @param ignoreList {Instance}
-    @param specialRaycastParams SpecialRaycastParams
+	@param direction Vector3
+	@param ignoreList {Instance}
+	@param specialRaycastParams SpecialRaycastParams
 
-    @return RaycastResult?
+	@return RaycastResult?
 ]=]
 function SpecialRaycast:_blockCast(origin: CFrame, size: Vector3, direction: Vector3, ignoreList: {Instance}, specialRaycastParams: SpecialRaycastParams.SpecialRaycastParams, count: number): RaycastResult?
 	raycastParams.FilterDescendantsInstances = ignoreList
@@ -89,16 +89,16 @@ end
 
 
 --[=[
-    Private method to manage the special raycasts logic
+	Private method to manage the special raycasts logic
 
-    @private
+	@private
 
-    @param origin Vector3
-    @param direction Vector3
-    @param ignoreList {Instance}
-    @param specialRaycastParams SpecialRaycastParams
+	@param origin Vector3
+	@param direction Vector3
+	@param ignoreList {Instance}
+	@param specialRaycastParams SpecialRaycastParams
 
-    @return RaycastResult?
+	@return RaycastResult?
 ]=]
 function SpecialRaycast:_specialRaycast(origin: Vector3, direction: Vector3, ignoreList: {Instance}, specialRaycastParams: SpecialRaycastParams.SpecialRaycastParams, count: number): RaycastResult?
 	raycastParams.FilterDescendantsInstances = ignoreList
