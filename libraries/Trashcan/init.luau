@@ -60,7 +60,21 @@ end
 ]=]
 local Trashcan = {}
 Trashcan.__index = Trashcan
+--[=[
+	@private
+	@prop _Connections {[any]: true} 
+	@within Trashcan
+
+	A table that stores the objects that are being tracked
+]=]
 Trashcan._Connections = {} :: {[any]: true}
+--[=[
+	@private
+	@prop _CustomCleanup {[string]: string}?
+	@within Trashcan
+	
+	Stores custom cleanup methods keywords
+]=]
 Trashcan._CustomCleanup = nil :: {[string]: string}?
 
 --[=[
@@ -72,7 +86,7 @@ Trashcan._CustomCleanup = nil :: {[string]: string}?
 
 	@return Trashcan
 ]=]
-function Trashcan.new(): Trashcan
+function Trashcan.new()
 	return setmetatable({}, Trashcan)
 end
 
@@ -81,7 +95,7 @@ end
 
 	@within Trashcan
 	@param object T -- Whatever object you wish to track
-	@param cleanupMethod string? The method to call on the object when it is time to clean it up. Primarily useful to cleanup custom objects
+	@param cleanupMethod string? -- The method to call on the object when it is time to clean it up. Primarily useful to cleanup custom objects
 
 	@return any The object that was passed in
 ]=]
@@ -195,7 +209,7 @@ function Trashcan:_CleanObject(object: any): ()
 		error("No cleanup method found for object of type " .. typeof(object)) -- Developer mistake; should error
 	end
 
-	cleanupMethod[object](object)
+	object[cleanupMethod](object)
 end
 
 export type Trashcan = {
