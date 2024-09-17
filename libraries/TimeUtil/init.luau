@@ -40,8 +40,6 @@ function TimeUtil:GetTextFormattedDate(time: number, scope: number?)
 			filteredTime > 1 and "s" or "", 
 			scope <= 0
 		)
-		
-		print(finalText)
 			
 		if scope <= 0 then
 			break
