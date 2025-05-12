@@ -1,22 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 local JestGlobals = require(ReplicatedStorage.DevPackages.JestGlobals)
 
 local it = JestGlobals.it
 local expect = JestGlobals.expect
 
-local function sum(x, y)
-    return x + y
-end 
+local sum = require(ReplicatedStorage.scripts.sum)
 
 it('adds 1 + 2 to equal 3', function()
 	expect(sum(1, 2)).toBe(3)
 end)
-
---[[
-local TestEz = require(ReplicatedStorage.TestEz)
-
-TestEz.TestBootstrap:run({
-    ReplicatedStorage.Packages
-})
-]]

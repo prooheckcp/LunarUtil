@@ -49,4 +49,16 @@ function TimeUtil:GetTextFormattedDate(time: number, scope: number?)
 	return finalText
 end
 
+function TimeUtil:MinutesToSeconds(minutes: number): number
+	return minutes * MINUTES
+end
+
+function TimeUtil:HoursToSeconds(hours: number): number
+	return hours * HOURS
+end
+
+function TimeUtil:DaysToSeconds(days: number)
+	return days * DAYS
+end
+
 return TimeUtil

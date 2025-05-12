@@ -5,6 +5,12 @@
 
     "ReplicatedStorage": {
       "$path": "src/ReplicatedStorage",
+      "scripts": {
+        "$path": "scripts"
+      },
+      "DevPackages": {
+        "$path": "DevPackages"
+      },
       "Packages": {
         "$path": "libraries"
       }

@@ -1,0 +1,12 @@
+[package]
+name = "prooheckcp/lunarutil"
+description = "A cleaner to handle connections and or object cleaning in your project"
+version = "0.0.1"
+license = "MIT"
+authors = ["Vasco Soares (prooheckcp)"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dev-dependencies]
+Jest = "jsdotlua/jest@3.10.0"
+JestGlobals = "jsdotlua/jest-globals@3.10.0"
