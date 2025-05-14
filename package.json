@@ -1,0 +1,18 @@
+{
+  "name": "lunarutil",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "npmluau",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "prooheckcp <vasco.soares.2001@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@prooheckcp/exampletest": "^0.0.1"
+  },
+  "devDependencies": {
+    "npmluau": "^0.1.2"
+  }
+}

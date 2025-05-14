@@ -1,0 +1,5 @@
+{
+  "aliases": {
+    "pkg": "node_modules/.luau-aliases"
+  }
+}
