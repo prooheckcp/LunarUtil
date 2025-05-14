@@ -10,6 +10,7 @@
       },
       "target": {
         "name": "roblox",
+        "rojo_sourcemap":"./sourcemap.json",
         "indexing_style": "wait_for_child"
       }
     }

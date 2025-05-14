@@ -4,7 +4,7 @@
     "$className": "DataModel",
 
     "ReplicatedStorage": {
-      "$path": "src/ReplicatedStorage",
+      "$path": "processed-src/ReplicatedStorage",
       "node_modules":{
         "$path": "node_modules"
       },
@@ -20,13 +20,13 @@
     },
 
     "ServerScriptService": {
-      "$path": "src/ServerScriptService"
+      "$path": "processed-src/ServerScriptService"
     },
 
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "Client": {
-          "$path": "src/StarterPlayerScripts"
+          "$path": "processed-src/StarterPlayerScripts"
         }
       }
     }
