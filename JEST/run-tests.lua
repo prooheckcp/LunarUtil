@@ -1,15 +1,15 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
 
-local runCLI = require(ReplicatedStorage.DevPackages.Jest).runCLI
+local runCLI = require(ReplicatedFirst:WaitForChild("DevPackages"):WaitForChild("Jest")).runCLI
 
 local processServiceExists, ProcessService = pcall(function()
 	return game:GetService("ProcessService")
 end)
 
-local status, result = runCLI(ReplicatedStorage:WaitForChild("scripts"), {
+local status, result = runCLI(ReplicatedFirst.scripts, {
 	verbose = false,
 	ci = false
-}, { ReplicatedStorage.scripts }):awaitStatus()
+}, { ReplicatedFirst.scripts }):awaitStatus()
 
 if status == "Rejected" then
 	print(result)

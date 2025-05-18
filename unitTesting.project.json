@@ -2,7 +2,14 @@
   "name": "Unit Testing",
   "tree": {
     "$className": "DataModel",
-
+    "ReplicatedFirst":{
+      "scripts": {
+        "$path": "scripts"
+      },
+      "DevPackages": {
+        "$path": "DevPackages"
+      }
+    },
     "ReplicatedStorage": {
         "$path": "src/ReplicatedStorage",
         "scripts": {
@@ -17,9 +24,6 @@
         }
     },
     "ServerScriptService": {
-      "scripts": {
-        "$path": "scripts"
-      },
       "$path": "src/ServerScriptService"
     }
   }
