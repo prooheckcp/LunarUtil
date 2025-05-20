@@ -4,7 +4,8 @@
     "$className": "DataModel",
     "ReplicatedFirst":{
       "scripts": {
-        "$path": "scripts"
+        "$className": "Folder",
+        "$path": "src/scripts"
       },
       "DevPackages": {
         "$path": "DevPackages"
@@ -12,10 +13,6 @@
     },
     "ReplicatedStorage": {
         "$path": "src/ReplicatedStorage",
-        "scripts": {
-            "$className": "Model",
-            "$path": "scripts"
-        },
         "DevPackages": {
             "$path": "DevPackages"
         },

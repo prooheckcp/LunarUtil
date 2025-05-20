@@ -6,7 +6,7 @@ local processServiceExists, ProcessService = pcall(function()
 	return game:GetService("ProcessService")
 end)
 
-local status, result = runCLI(ReplicatedFirst.scripts, {
+local status, result = runCLI(ReplicatedFirst:WaitForChild("scripts"), {
 	verbose = false,
 	ci = false
 }, { ReplicatedFirst.scripts }):awaitStatus()
